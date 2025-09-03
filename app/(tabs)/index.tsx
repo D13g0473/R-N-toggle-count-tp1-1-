@@ -1,75 +1,115 @@
-import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useState } from 'react';
+import { View, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
+  const [count, setCount] = useState(0);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const toggleTheme = () => setIsDarkTheme(!isDarkTheme);
+  const { height } = Dimensions.get('window');
+
+  const containerStyle = {
+    backgroundColor: isDarkTheme ? '#1D1D1D' : '#F5F5F5',
+    flex: 1,
+    padding: 16,
+    marginTop: Platform.OS === 'android' ? 35 : 0,
+  };
+
+  const cardStyle = StyleSheet.create({
+  card: {
+    backgroundColor: isDarkTheme ? '#333' : '#FFF',
+    margin: 20,
+    marginTop: height  * 0.2,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  });
+
+  const textStyle = StyleSheet.create({
+    text:{
+    color: isDarkTheme ? '#FFF' : '#000',
+    height: 'auto',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+    }
+  });
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  button: {
+    backgroundColor: isDarkTheme ? '#007AFF': '#6F8DF2',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    textAlign: 'center',
+    alignItems: 'center',
+    borderRadius: 25, // 🔹 redondea el botón
+    marginVertical: 8,
+  },
+  resetButton: {
+    backgroundColor: isDarkTheme ? '#FF3B30' : '#F26F6F',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color : isDarkTheme ? '#FFF' : '#000', 
+  },
+  themeButton:{
+    backgroundColor: isDarkTheme ? '#333' : '#FFF' 
+  },
+  counter: {
+    marginTop: 20,
+    fontSize: 24,
+  },
+});
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <ThemedView style={containerStyle}>
+      <View
+      style={{ flexDirection: 'row',  justifyContent: 'flex-end' }}
+      >
+      <TouchableOpacity
+        style={[styles.button, styles.themeButton]}
+        onPress={toggleTheme}
+      >
+        <Ionicons 
+          name={isDarkTheme ? "moon" : "sunny"} 
+          size={24} 
+          color={isDarkTheme ? "#FFF" : "#000"} 
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+      </TouchableOpacity>
+      </View>
+      <ThemedView style={cardStyle.card}>
+        <ThemedText style={textStyle.text}>{count}</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: height  * 0.2 }}>
+       <TouchableOpacity
+        style={styles.button}
+        onPress={() => setCount(count + 1)}
+      >
+        <Text style={styles.buttonText}>Add</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, styles.resetButton]}
+        onPress={() => setCount(0)}
+      >
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
+      </View>
+    </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

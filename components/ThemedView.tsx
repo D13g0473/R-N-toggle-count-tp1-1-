@@ -1,14 +1,11 @@
-import { View, type ViewProps } from 'react-native';
+import { View, ViewProps, StyleProp, ViewStyle } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
-import { useThemeColor } from '@/hooks/useThemeColor';
-
-export type ThemedViewProps = ViewProps & {
-  lightColor?: string;
-  darkColor?: string;
+type ThemedViewProps = ViewProps & {
+  style?: StyleProp<ViewStyle>;
 };
 
-export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-
-  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+export function ThemedView({ style, ...props }: ThemedViewProps) {
+  const theme = useTheme(); // ejemplo de tema
+  return <View style={[{ backgroundColor: theme.colors.background }, style]} {...props} />;
 }
